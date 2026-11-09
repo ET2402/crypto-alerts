@@ -1,0 +1,42 @@
+name: crypto-alerts
+
+on:
+  schedule:
+    - cron: "10 0,6,12,18 * * *"   # 4x per dag (UTC); 00:10 = beslissing na dagafsluiting
+  workflow_dispatch:
+    inputs:
+      zelftest:
+        description: "Zelftest backtest uitvoeren in plaats van de gewone run"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crypto-alerts
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Run
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ "${{ inputs.zelftest }}" = "true" ]; then python -m tool.backtest; else python -m tool.main; fi
+      - name: Resultaten opslaan
+        if: always()
+        run: |
+          git config user.name "crypto-alerts-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add state docs
+          git diff --cached --quiet || (git commit -m "update $(date -u +%F_%H%M)" && git push)
