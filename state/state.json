@@ -1,1 +1,8 @@
-{}
+{
+ "alerted": [
+  "BTC-EUR|1794355200000|BUY"
+ ],
+ "paper_start": 1794355200000,
+ "started": true,
+ "warn": {}
+}
