@@ -5,10 +5,11 @@
  "paper_start": 1794355200000,
  "started": true,
  "warn": {
-  "BTC-EUR": "nadert_verkooplijn"
+  "BTC-EUR": "live_onder_verkooplijn"
  },
  "warn_sent": {
   "BTC-EUR": {
+   "live_onder_verkooplijn": 1794636669478,
    "nadert_verkooplijn": 1794551584840
   }
  }
